@@ -1,5 +1,5 @@
 use logwatcher::{LogWatcher, LogWatcherAction, LogWatcherEvent};
-use tetragon::process::TetraProcess;
+use tetragon::TetraEvent;
 
 fn main() {
     let mut log_watcher = LogWatcher::register("/var/log/tetragon/tetragon.log").unwrap();
@@ -9,7 +9,7 @@ fn main() {
             Ok(event) => match event {
                 LogWatcherEvent::Line(line) => {
                     println!("{}", line);
-                    let response: TetraProcess = serde_json::from_str(&line).unwrap();
+                    let response: TetraEvent = serde_json::from_str(&line).unwrap();
                     println!("{:#?}\n", response);
                 }
                 LogWatcherEvent::LogRotation => {
