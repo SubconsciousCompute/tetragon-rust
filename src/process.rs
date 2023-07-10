@@ -51,9 +51,22 @@ pub struct ProcessExit {
 }
 
 #[derive(Debug, Deserialize, Serialize)]
-pub struct JsonResponse {
-    pub process_exec: Option<ProcessExec>,
-    pub process_exit: Option<ProcessExit>,
+pub struct Start {
+    pub process_exec: ProcessExec,
     pub node_name: Option<String>,
     pub time: Option<String>,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct End {
+    pub process_exit: ProcessExit,
+    pub node_name: Option<String>,
+    pub time: Option<String>,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(untagged)]
+pub enum TetraProcess {
+    Start(Start),
+    End(End),
 }
