@@ -17,7 +17,8 @@ pub struct ProcessKprobe {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Arg {
-    pub sock_arg: Option<SockArg>,
+    pub sock_arg: SockArg,
+    pub int_arg: Option<i64>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -30,6 +31,7 @@ pub struct SockArg {
     pub daddr: Option<String>,
     pub sport: Option<i64>,
     pub dport: Option<i64>,
+    pub cookie: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -45,6 +47,7 @@ pub struct Parent {
     pub auid: Option<i64>,
     pub parent_exec_id: Option<String>,
     pub refcnt: Option<i64>,
+    pub tid: Option<i64>,
 }
 
 #[derive(Debug, Deserialize, Serialize)]

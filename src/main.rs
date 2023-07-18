@@ -1,21 +1,38 @@
 use logwatcher::{LogWatcher, LogWatcherAction, LogWatcherEvent};
+use tetragon::file::TetraFile;
 use tetragon::network::TetraNetwork;
+use tetragon::process::TetraProcess;
 use tetragon::TetraEvent;
 
 fn main() {
     let mut log_watcher = LogWatcher::register("/var/log/tetragon/tetragon.log").unwrap();
 
+    println!("Tetragon logs...\n");
+
     log_watcher.watch(&mut move |result| {
         match result {
             Ok(event) => match event {
                 LogWatcherEvent::Line(line) => {
-                    //println!("\n\n{}\n\n", line);
+                    //println!("{}", &line);
                     let response: TetraEvent = serde_json::from_str(&line).unwrap();
                     match response {
-                        TetraEvent::Process(_) => {}
+                        TetraEvent::Process(p) => match p {
+                            TetraProcess::Start(s) => {
+                                println!(
+                                    "Process Start : {}",
+                                    s.process_exec.process.unwrap().binary.unwrap()
+                                );
+                            }
+                            TetraProcess::End(e) => {
+                                println!(
+                                    "Process End : {}",
+                                    e.process_exit.process.unwrap().binary.unwrap()
+                                );
+                            }
+                        },
                         TetraEvent::Network(k) => {
                             println!(
-                                "network {}",
+                                "Network : {}",
                                 match k {
                                     TetraNetwork::Tcp(k) => {
                                         k.process_kprobe.unwrap().function_name.unwrap()
@@ -23,6 +40,14 @@ fn main() {
                                 }
                             )
                         }
+                        TetraEvent::File(f) => match f {
+                            TetraFile::File(f) => {
+                                println!(
+                                    "File : {}",
+                                    f.process_kprobe.unwrap().function_name.unwrap()
+                                );
+                            }
+                        },
                     }
                 }
                 LogWatcherEvent::LogRotation => {

@@ -1,27 +1,36 @@
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Start {
-    pub process_exec: Pe,
+pub struct FileAccess {
+    pub process_kprobe: Option<ProcessKprobe>,
     pub node_name: Option<String>,
     pub time: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct End {
-    pub process_exit: Pe,
-    pub node_name: Option<String>,
-    pub time: Option<String>,
+pub struct ProcessKprobe {
+    pub process: Option<Parent>,
+    pub parent: Option<Parent>,
+    pub function_name: Option<String>,
+    pub args: Option<Vec<Arg>>,
+    #[serde(rename = "return")]
+    pub process_kprobe_return: Option<Return>,
+    pub action: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Pe {
-    pub process: Option<Process>,
-    pub parent: Option<Process>,
+pub struct Arg {
+    pub file_arg: Option<FileArg>,
+    pub int_arg: Option<i64>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Process {
+pub struct FileArg {
+    pub path: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Parent {
     pub exec_id: Option<String>,
     pub pid: Option<i64>,
     pub uid: Option<i64>,
@@ -34,6 +43,7 @@ pub struct Process {
     pub docker: Option<String>,
     pub parent_exec_id: Option<String>,
     pub refcnt: Option<i64>,
+    pub tid: Option<i64>,
     pub arguments: Option<String>,
 }
 
@@ -42,6 +52,7 @@ pub struct Pod {
     pub namespace: Option<String>,
     pub name: Option<String>,
     pub container: Option<Container>,
+    pub pod_labels: Option<PodLabels>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -59,9 +70,21 @@ pub struct Image {
     pub name: Option<String>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PodLabels {
+    #[serde(rename = "app.kubernetes.io/name")]
+    pub app_kubernetes_io_name: Option<String>,
+    pub class: Option<String>,
+    pub org: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Return {
+    pub int_arg: Option<i64>,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
 #[serde(untagged)]
-pub enum TetraProcess {
-    Start(Start),
-    End(End),
+pub enum TetraFile {
+    File(FileAccess),
 }

@@ -1,7 +1,9 @@
+use crate::file::TetraFile;
 use crate::network::TetraNetwork;
 use crate::process::TetraProcess;
 use serde::{Deserialize, Serialize};
 
+pub mod file;
 pub mod network;
 pub mod process;
 
@@ -10,4 +12,5 @@ pub mod process;
 pub enum TetraEvent {
     Process(TetraProcess),
     Network(TetraNetwork),
+    File(TetraFile),
 }
