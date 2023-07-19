@@ -30,22 +30,17 @@ fn main() {
                                 );
                             }
                         },
-                        TetraEvent::Network(k) => {
-                            println!(
-                                "Network : {}",
-                                match k {
-                                    TetraNetwork::Tcp(k) => {
-                                        k.process_kprobe.unwrap().function_name.unwrap()
-                                    }
-                                }
-                            )
-                        }
+                        TetraEvent::Network(n) => match n {
+                            TetraNetwork::Tcp(t) => {
+                                println!(
+                                    "Tcp : {}",
+                                    t.process_kprobe.unwrap().function_name.unwrap()
+                                );
+                            }
+                        },
                         TetraEvent::File(f) => match f {
                             TetraFile::File(f) => {
-                                println!(
-                                    "File : {}",
-                                    f.process_kprobe.unwrap().function_name.unwrap()
-                                );
+                                println!("File : {:?}", f.process_kprobe.unwrap().args.unwrap());
                             }
                         },
                     }
