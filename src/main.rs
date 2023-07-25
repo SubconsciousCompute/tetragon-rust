@@ -13,7 +13,8 @@ fn main() {
         match result {
             Ok(event) => match event {
                 LogWatcherEvent::Line(line) => {
-                    //println!("{}", &line);
+                    println!("\n{}", &line);
+                    /*
                     let response: TetraEvent = serde_json::from_str(&line).unwrap();
                     match response {
                         TetraEvent::Process(p) => match p {
@@ -44,6 +45,8 @@ fn main() {
                             }
                         },
                     }
+
+                     */
                 }
                 LogWatcherEvent::LogRotation => {
                     println!("Logfile rotation");
